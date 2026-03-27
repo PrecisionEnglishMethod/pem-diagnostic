@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Precision English Method™ — Diagnostic professionnel</title>
+<style>
+:root{
+  --teal:#1b4f5a;--tm:#2d7a8a;--tl:#e8f4f6;--txl:#f4fafb;
+  --sage:#3d6b5e;--sl:#eef5f3;
+  --amb:#8a6200;--al:#fdf6e3;
+  --bg:#f4f6f7;--border:#d1d5db;--border-lt:#e5e7eb;
+  --text:#1f2937;--muted:#6b7280;--r:8px;--rl:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;padding:32px 16px;}
+.wrap{max-width:660px;margin:0 auto;}
+.pem-hdr{background:var(--teal);border-radius:var(--rl);padding:24px 28px;margin-bottom:20px;}
+.pem-hdr h1{color:#fff;font-size:19px;font-weight:600;margin-bottom:3px;}
+.pem-hdr p{color:#a8d5dc;font-size:12px;line-height:1.5;}
+.pem-hdr .tag{display:inline-block;background:rgba(255,255,255,.12);color:#d4eef1;font-size:11px;padding:3px 11px;border-radius:20px;margin-top:8px;}
+.prog-bar{height:3px;background:var(--border-lt);border-radius:2px;margin-bottom:24px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--tm);border-radius:2px;transition:width .4s ease;}
+.step{display:none;}.step.active{display:block;animation:fi .25s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.slbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:4px;}
+.stit{font-size:21px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.ssub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.fg{margin-bottom:14px;}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:5px;}
+.fg input,.fg select{width:100%;font-size:13px;border:1px solid var(--border);border-radius:var(--r);background:#fff;color:var(--text);padding:9px 11px;outline:none;transition:border-color .15s,box-shadow .15s;appearance:none;}
+.fg select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+.fg input:focus,.fg select:focus{border-color:var(--tm);box-shadow:0 0 0 3px rgba(45,122,138,.12);}
+.fg .hint{font-size:11px;color:var(--tm);margin-top:3px;}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.track-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.tc{border:1px solid var(--border);border-radius:var(--rl);padding:14px;cursor:pointer;transition:all .15s;background:#fff;}
+.tc:hover{border-color:var(--tm);background:var(--txl);}
+.tc.sel{border:2px solid var(--tm);background:var(--tl);}
+.tc-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tm);margin-bottom:2px;}
+.tc-en{font-size:10px;color:var(--muted);margin-bottom:3px;font-style:italic;}
+.tc-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.tc-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+.ch-section{margin-bottom:20px;display:none;}
+.ch-section.visible{display:block;}
+.ch-lbl{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.ch-sub{font-size:12px;color:var(--muted);margin-bottom:10px;}
+.ch-cards{display:grid;gap:6px;}
+.ch-card{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .15s;background:#fff;}
+.ch-card:hover{border-color:var(--tm);background:var(--txl);}
+.ch-card.sel{border:2px solid var(--tm);background:var(--tl);}
+.ch-radio{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;position:relative;transition:all .15s;}
+.ch-card.sel .ch-radio{background:var(--teal);border-color:var(--teal);}
+.ch-card.sel .ch-radio::after{content:'';position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;top:50%;left:50%;transform:translate(-50%,-50%);}
+.ch-txt{font-size:12px;color:var(--text);line-height:1.5;}
+.ch-tag{font-size:10px;font-weight:600;color:var(--tm);margin-top:2px;}
+.ch-other-ta{width:100%;font-size:12px;border:1px solid var(--border);border-radius:var(--r);padding:9px 11px;background:#fff;color:var(--text);resize:none;min-height:64px;outline:none;line-height:1.5;margin-top:8px;display:none;}
+.ch-other-ta.visible{display:block;}
+.ch-other-ta:focus{border-color:var(--tm);box-shadow:0 0 0 3px rgba(45,122,138,.12);}
+.vrte-panel{border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:14px;}
+.sit-hdr{background:var(--teal);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+.sit-hdr span{font-size:12px;font-weight:600;color:#fff;}
+.sit-hdr small{font-size:11px;color:#a8d5dc;}
+.sit-body{background:var(--txl);padding:11px 13px;}
+.sit-intro{font-size:12px;color:var(--tm);margin-bottom:10px;line-height:1.5;font-style:italic;}
+.chip-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.chip{display:flex;align-items:flex-start;gap:7px;padding:8px 10px;background:#fff;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;transition:all .12s;}
+.chip:hover{border-color:var(--tm);background:var(--tl);}
+.chip.used{background:var(--sl);border-color:var(--sage);cursor:default;}
+.chip-icon{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--tm);color:var(--tm);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px;font-weight:400;line-height:1;}
+.chip.used .chip-icon{background:var(--sage);border-color:var(--sage);color:#fff;font-size:10px;}
+.chip-txt{font-size:11px;color:var(--text);line-height:1.4;}
+.chip.used .chip-txt{color:var(--sage);}
+.show-more{font-size:11px;color:var(--tm);cursor:pointer;text-align:center;padding:6px 0 1px;display:block;background:none;border:none;width:100%;}
+.show-more:hover{text-decoration:underline;}
+.vrte-guide{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;border-top:1px solid var(--border-lt);background:#fff;}
+.vg-item{padding:8px 10px;border-radius:var(--r);background:var(--txl);border:1px solid var(--border-lt);}
+.vg-letter{font-size:13px;font-weight:700;color:var(--teal);margin-bottom:1px;}
+.vg-name{font-size:10px;font-weight:600;color:var(--tm);margin-bottom:3px;}
+.vg-scale{font-size:10px;color:var(--muted);line-height:1.4;}
+.vg-scale strong{color:var(--text);}
+.vrte-thead{display:grid;grid-template-columns:1fr 44px 44px 44px 44px 54px 74px;gap:3px;background:var(--teal);padding:8px 12px;}
+.vrte-thead span{font-size:11px;font-weight:600;color:#a8d5dc;text-align:center;}
+.vrte-thead span:first-child{text-align:left;color:#d4eef1;}
+.vrte-row{display:grid;grid-template-columns:1fr 44px 44px 44px 44px 54px 74px;gap:3px;padding:8px 12px;border-top:1px solid var(--border-lt);align-items:center;background:#fff;}
+.vrte-row:nth-child(even){background:var(--bg);}
+.vrte-row.lit{background:var(--tl)!important;transition:background .4s;}
+.sit-inp{width:100%;font-size:11px;border:1px solid var(--border-lt);border-radius:4px;padding:5px 7px;background:#fff;color:var(--text);}
+.sit-inp:focus{border-color:var(--tm);outline:none;}
+.sit-inp::placeholder{font-size:10px;color:var(--muted);}
+.sc-sel{width:40px;font-size:11px;border:1px solid var(--border-lt);border-radius:4px;padding:4px 2px;text-align:center;background:#fff;color:var(--text);}
+.sc-sel:focus{border-color:var(--tm);outline:none;}
+.tot-b{font-size:11px;font-weight:600;text-align:center;padding:4px 2px;border-radius:4px;}
+.zc{background:#f3f4f6;color:var(--muted);}
+.zk{background:var(--tl);color:var(--teal);}
+.zs{background:var(--sl);color:var(--sage);}
+.zd{background:var(--al);color:var(--amb);}
+.zn-lbl{font-size:10px;text-align:center;color:var(--muted);}
+.z-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-bottom:16px;}
+.z-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:3px;}
+.sum-card{border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:12px;background:#fff;}
+.sum-hdr{background:var(--teal);padding:10px 14px;}
+.sum-hdr h3{font-size:13px;font-weight:600;color:#fff;}
+.sum-body{padding:12px 14px;}
+.sum-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border-lt);font-size:12px;}
+.sum-row:last-child{border-bottom:none;}
+.sum-lbl{color:var(--muted);}
+.sum-val{font-weight:600;color:var(--text);text-align:right;max-width:60%;}
+.pri-item{display:flex;align-items:flex-start;gap:9px;padding:8px 10px;border-radius:var(--r);margin-bottom:6px;background:var(--bg);}
+.pri-item:first-child{background:var(--tl);}
+.pri-num{width:20px;height:20px;border-radius:50%;background:var(--teal);color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.pri-sit{flex:1;font-size:12px;color:var(--text);line-height:1.4;}
+.pri-score{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.out-list{list-style:none;padding:0;margin:0 0 10px;}
+.out-list li{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border-lt);font-size:12px;color:var(--text);line-height:1.5;}
+.out-list li:last-child{border-bottom:none;}
+.out-list li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:5px;}
+.notes-ta{width:100%;font-size:12px;border:1px solid var(--border);border-radius:var(--r);padding:9px 11px;background:#fff;color:var(--text);resize:vertical;min-height:68px;outline:none;line-height:1.6;}
+.notes-ta:focus{border-color:var(--tm);box-shadow:0 0 0 3px rgba(45,122,138,.12);}
+.btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:12px;}
+.btn-b{background:#fff;border:1px solid var(--border);color:var(--muted);font-size:13px;padding:9px 18px;border-radius:var(--r);cursor:pointer;font-weight:500;}
+.btn-b:hover{background:var(--bg);}
+.btn-n{background:var(--teal);color:#fff;border:none;font-size:13px;font-weight:600;padding:10px 22px;border-radius:var(--r);cursor:pointer;transition:background .15s;}
+.btn-n:hover{background:var(--tm);}
+.btn-n:disabled{background:var(--border);cursor:default;}
+.success-wrap{text-align:center;padding:32px 20px;}
+.s-icon{width:52px;height:52px;border-radius:50%;background:var(--tl);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.s-icon svg{width:24px;height:24px;stroke:var(--teal);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.doc-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:14px 0 20px;}
+.doc-chip{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid var(--border);color:var(--muted);background:var(--bg);}
+.top-box{background:var(--tl);border-radius:var(--rl);padding:14px 18px;max-width:440px;margin:0 auto 20px;text-align:left;}
+.top-box-lbl{font-size:10px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;}
+.top-box-val{font-size:13px;color:var(--text);line-height:1.5;}
+.book-btn{display:inline-block;background:var(--teal);color:#fff;border:none;font-size:14px;font-weight:600;padding:13px 32px;border-radius:var(--r);cursor:pointer;text-decoration:none;transition:background .15s;margin-bottom:10px;}
+.book-btn:hover{background:var(--tm);}
+.book-note{font-size:12px;color:var(--muted);margin-bottom:16px;}
+@media(max-width:480px){
+  .fg-row,.track-grid,.chip-grid{grid-template-columns:1fr;}
+  .vrte-thead,.vrte-row{grid-template-columns:1fr 36px 36px 36px 36px 44px 58px;gap:2px;padding:7px 8px;}
+  .vrte-guide{grid-template-columns:1fr 1fr;}
+  body{padding:16px 10px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="pem-hdr">
+  <h1>Precision English Method&#8482;</h1>
+  <p>Programme de performance en anglais professionnel conçu pour les professionnels qui opèrent au plus haut niveau.<br>
+  <span style="color:#d4eef1;font-size:11px;font-style:italic;">Professional English performance programme for high-level professionals.</span></p>
+  <span class="tag">Diagnostic professionnel — 4 minutes</span>
+</div>
+
+<div class="prog-bar"><div class="prog-fill" id="prog" style="width:5%"></div></div>
+
+<!-- ÉTAPE 1 -->
+<div class="step active" id="s1">
+  <div class="slbl">Étape 1 sur 4</div>
+  <div class="stit">Parlez-moi de vous</div>
+  <div class="ssub">Votre secteur et votre rôle déterminent les situations proposées et le contenu de votre programme.</div>
+  <div class="fg-row">
+    <div class="fg"><label>Prénom</label><input id="fname" type="text" placeholder="ex. Marie"/></div>
+    <div class="fg"><label>Nom</label><input id="lname" type="text" placeholder="ex. Dupont"/></div>
+  </div>
+  <div class="fg"><label>Intitulé de poste</label><input id="jobtitle" type="text" placeholder="ex. Responsable commercial international"/></div>
+  <div class="fg"><label>Entreprise</label><input id="company" type="text" placeholder="ex. Votre entreprise"/></div>
+  <div class="fg-row">
+    <div class="fg">
+      <label>Secteur d'activité <span class="hint">— détermine vos scénarios</span></label>
+      <select id="sector">
+        <option value="">Sélectionnez votre secteur</option>
+        <option value="sales">Ventes internationales &amp; Développement commercial</option>
+        <option value="industrial">Industrie / Fabrication / Ingénierie</option>
+        <option value="marketing">Marketing, Marque &amp; Communication</option>
+        <option value="product">Produit, Innovation &amp; Technologie</option>
+        <option value="finance">Finance, Stratégie &amp; Conseil</option>
+        <option value="technical">Management technique &amp; Gestion de projet</option>
+        <option value="hr">Ressources humaines &amp; L&amp;D</option>
+        <option value="legal">Juridique &amp; Droit des affaires</option>
+        <option value="founder">Entrepreneur &amp; Fondateur</option>
+      </select>
+    </div>
+    <div class="fg"><label>Email professionnel</label><input id="email" type="email" placeholder="vous@entreprise.com"/></div>
+  </div>
+  <div class="btn-row"><button class="btn-n" onclick="go(2)">Continuer →</button></div>
+</div>
+
+<!-- ÉTAPE 2 -->
+<div class="step" id="s2">
+  <div class="slbl">Étape 2 sur 4</div>
+  <div class="stit">Où en êtes-vous ?</div>
+  <div class="ssub">Choisissez le parcours qui correspond le mieux à votre situation, puis sélectionnez le blocage qui vous parle le plus.</div>
+  <div class="track-grid">
+    <div class="tc" id="tf" onclick="pickTrack('f')">
+      <div class="tc-badge">Parcours Foundation</div>
+      <div class="tc-en">Foundation Track — A2 to B1</div>
+      <div class="tc-title">Je dois devenir opérationnel(le)</div>
+      <div class="tc-desc">L'anglais me bloque dans les situations réelles — appels, réunions, négociations. Je l'évite quand je peux.</div>
+    </div>
+    <div class="tc" id="ts" onclick="pickTrack('s')">
+      <div class="tc-badge">Parcours Stratégique</div>
+      <div class="tc-en">Strategic Track — B2+</div>
+      <div class="tc-title">Je dois performer à un niveau supérieur</div>
+      <div class="tc-desc">Je fonctionne en anglais mais il me manque la précision, l'autorité ou l'influence pour vraiment piloter les situations à fort enjeu.</div>
+    </div>
+  </div>
+  <div class="ch-section" id="ch-sec">
+    <div class="ch-lbl">Qu'est-ce qui vous bloque en ce moment ?</div>
+    <div class="ch-sub" id="ch-sub">Sélectionnez la description qui correspond le mieux à votre situation.</div>
+    <div class="ch-cards" id="ch-cards"></div>
+    <textarea class="ch-other-ta" id="ch-other" placeholder="Décrivez votre situation en une ou deux phrases..."></textarea>
+  </div>
+  <div class="btn-row">
+    <button class="btn-b" onclick="go(1)">← Retour</button>
+    <button class="btn-n" id="btn2" disabled onclick="go(3)">Continuer →</button>
+  </div>
+</div>
+
+<!-- ÉTAPE 3 -->
+<div class="step" id="s3">
+  <div class="slbl">Étape 3 sur 4</div>
+  <div class="stit">Votre diagnostic V.R.T.E</div>
+  <div class="ssub">Identifiez les situations professionnelles où l'anglais est le plus critique pour vous. Notez chacune sur les quatre dimensions ci-dessous.</div>
+  <div class="vrte-panel">
+    <div class="sit-hdr">
+      <span id="sugg-title">Situations fréquentes dans votre secteur</span>
+      <small>Cliquez pour ajouter · éditez pour personnaliser</small>
+    </div>
+    <div class="sit-body">
+      <div class="sit-intro">Ces situations sont courantes pour les professionnels de votre secteur. Cliquez sur celles qui vous correspondent pour les ajouter, puis ajustez le texte si nécessaire.</div>
+      <div class="chip-grid" id="chip-grid"></div>
+      <button class="show-more" id="show-more-btn" onclick="toggleMore()">+ Voir plus de situations</button>
+    </div>
+    <div class="vrte-guide">
+      <div class="vg-item">
+        <div class="vg-letter">V — <span style="font-size:10px;font-weight:400;color:var(--muted)">Value / Valeur</span></div>
+        <div class="vg-name">Importance business</div>
+        <div class="vg-scale"><strong>1</strong> = faible impact &nbsp; <strong>5</strong> = critique pour le CA ou la crédibilité</div>
+      </div>
+      <div class="vg-item">
+        <div class="vg-letter">R — <span style="font-size:10px;font-weight:400;color:var(--muted)">Risk / Risque</span></div>
+        <div class="vg-name">Coût de l'échec</div>
+        <div class="vg-scale"><strong>1</strong> = conséquences mineures &nbsp; <strong>5</strong> = perte de deal ou de crédibilité</div>
+      </div>
+      <div class="vg-item">
+        <div class="vg-letter">T — <span style="font-size:10px;font-weight:400;color:var(--muted)">Time / Temps</span></div>
+        <div class="vg-name">Urgence &amp; fréquence</div>
+        <div class="vg-scale"><strong>1</strong> = rare ou éloigné &nbsp; <strong>5</strong> = fréquent et immédiat</div>
+      </div>
+      <div class="vg-item">
+        <div class="vg-letter">E — <span style="font-size:10px;font-weight:400;color:var(--muted)">Effort / Effort</span></div>
+        <div class="vg-name">Écart de compétence</div>
+        <div class="vg-scale"><strong>1</strong> = je gère bien &nbsp; <strong>5</strong> = écart important entre mon niveau actuel et ce qui est requis</div>
+      </div>
+    </div>
+    <div class="vrte-thead">
+      <span>Situation de communication</span>
+      <span>V</span><span>R</span><span>T</span><span>E</span>
+      <span>/20</span><span>Zone</span>
+    </div>
+    <div id="vrte-body"></div>
+  </div>
+  <div class="z-legend">
+    <span><span class="z-dot" style="background:#1b4f5a"></span>16–20 Critique</span>
+    <span><span class="z-dot" style="background:#3d6b5e"></span>11–15 Stratégique</span>
+    <span><span class="z-dot" style="background:#8a6200"></span>6–10 Secondaire</span>
+    <span><span class="z-dot" style="background:#aaa"></span>0–5 À surveiller</span>
+  </div>
+  <div class="btn-row">
+    <button class="btn-b" onclick="go(2)">← Retour</button>
+    <button class="btn-n" onclick="go(4)">Voir le récapitulatif →</button>
+  </div>
+</div>
+
+<!-- ÉTAPE 4 -->
+<div class="step" id="s4">
+  <div class="slbl">Étape 4 sur 4</div>
+  <div class="stit">Votre récapitulatif</div>
+  <div class="ssub">Vérifiez avant de soumettre. Ce document constituera la base de votre Profil de Communication et de votre programme.</div>
+  <div class="sum-card">
+    <div class="sum-hdr"><h3>Profil professionnel</h3></div>
+    <div class="sum-body" id="sum-profile"></div>
+  </div>
+  <div class="sum-card">
+    <div class="sum-hdr"><h3>Votre situation actuelle</h3></div>
+    <div class="sum-body"><p style="font-size:13px;color:#374151;line-height:1.6;font-style:italic;" id="sum-challenge"></p></div>
+  </div>
+  <div class="sum-card">
+    <div class="sum-hdr"><h3>Situations V.R.T.E prioritaires — classées par score</h3></div>
+    <div class="sum-body" id="sum-vrte"></div>
+  </div>
+  <div class="sum-card">
+    <div class="sum-hdr"><h3>Programme recommandé</h3></div>
+    <div class="sum-body" id="sum-rec"></div>
+  </div>
+  <div class="sum-card" style="border-color:#e5e7eb;">
+    <div class="sum-hdr" style="background:#f4f6f7;"><h3 style="color:#1f2937;">Informations complémentaires pour Stephanie</h3></div>
+    <div class="sum-body"><textarea class="notes-ta" id="notes" placeholder="ex. J'ai un salon professionnel en juin, mon entreprise passe à un reporting en anglais, je voyage régulièrement à l'étranger..."></textarea></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-b" onclick="go(3)">← Retour</button>
+    <button class="btn-n" onclick="submit()">Soumettre et réserver ma séance →</button>
+  </div>
+</div>
+
+<!-- SUCCÈS -->
+<div class="step" id="s5">
+  <div class="success-wrap">
+    <div class="s-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div style="font-size:20px;font-weight:700;color:#1f2937;margin-bottom:6px;" id="s-name">Merci.</div>
+    <div style="font-size:13px;color:#6b7280;max-width:420px;margin:0 auto 4px;line-height:1.7;">Votre diagnostic a bien été reçu. Stephanie analysera vos résultats V.R.T.E avant votre séance. Dans les 24 heures suivant votre consultation, vous recevrez :</div>
+    <div class="doc-chips">
+      <span class="doc-chip">Profil de Communication</span>
+      <span class="doc-chip">Carte V.R.T.E</span>
+      <span class="doc-chip">Proposition de programme</span>
+      <span class="doc-chip">Convention de formation</span>
+    </div>
+    <div class="top-box">
+      <div class="top-box-lbl">Votre situation prioritaire</div>
+      <div class="top-box-val" id="s-top">À confirmer lors de votre séance</div>
+    </div>
+    <a class="book-btn" id="book-link" href="https://calendly.com/stephanie-precisionenglishmethod/new-meeting" target="_blank">
+      Réserver ma consultation gratuite de 25 minutes →
+    </a>
+    <div class="book-note">Gratuit · Sans engagement · Microsoft Teams · 25 minutes</div>
+    <p style="font-size:11px;color:#9ca3af;margin-top:10px;">Precision English Method&#8482; · stephanie@precisionenglishmethod.com · +33 6 52 15 84 08</p>
+  </div>
+</div>
+
+</div>
+<script>
+const CHALLENGES={
+  sales:{
+    f:[
+      {t:"Je perds mes moyens dès que je décroche le téléphone pour un client anglophone — je bloque, je parle trop lentement, je ne tiens pas la conversation sous pression.",tag:"Confiance au téléphone"},
+      {t:"Je suis les réunions en anglais mais je ne peux pas contribuer correctement — le temps que je formule ma phrase, la conversation est passée à autre chose.",tag:"Participation en temps réel"},
+      {t:"J'évite l'anglais écrit autant que possible — mes emails me prennent trop de temps et je ne suis jamais sûr(e) qu'ils sont professionnels.",tag:"Communication écrite"},
+      {t:"Je gère les échanges simples mais tout ce qui implique une négociation, des objections ou une pression commerciale me déstabilise complètement.",tag:"Pression commerciale"},
+    ],
+    s:[
+      {t:"Je fonctionne en anglais au quotidien mais je perds mon autorité quand ça compte — en négociation, je passe pour hésitant plutôt que persuasif.",tag:"Autorité en négociation"},
+      {t:"Je conclus des deals en français mais mon pipeline anglophone sous-performe — je ne suis pas assez à l'aise pour tenir ferme sur les prix ou lire la situation.",tag:"Performance pipeline"},
+      {t:"Je présente bien en français mais en anglais je perds le fil — je délivre des faits mais pas la conviction ni le cadrage stratégique.",tag:"Persuasion & cadrage"},
+      {t:"Mon anglais écrit est fonctionnel mais pas assez précis pour les interlocuteurs seniors — mes emails manquent du ton et de la précision qui créent la crédibilité.",tag:"Communication écrite senior"},
+    ]
+  },
+  industrial:{
+    f:[
+      {t:"Je décris nos produits en français mais en anglais je cherche mes mots techniques et je perds la confiance du client pendant les démonstrations.",tag:"Vocabulaire technique"},
+      {t:"Je compte sur mes collègues pour gérer les appels clients anglophones — je comprends l'essentiel mais je ne peux pas répondre assez vite sans faire d'erreurs.",tag:"Réponse en temps réel"},
+      {t:"Rédiger des rapports techniques, des comptes rendus de maintenance ou des fiches incident en anglais me prend beaucoup trop de temps.",tag:"Rédaction technique"},
+      {t:"J'évite les visites de chantier et les réunions de projet internationales en anglais — je contribue très peu et j'ai l'impression de ne pas bien représenter l'entreprise.",tag:"Communication de projet international"},
+    ],
+    s:[
+      {t:"Je pilote des projets internationaux mais je perds mon autorité dans les réunions en anglais — je comprends tout mais ne peux pas exprimer mes positions complexes assez vite.",tag:"Autorité en leadership de projet"},
+      {t:"Mon expertise technique est solide mais je ne sais pas la traduire en anglais persuasif pour les présentations clients ou management.",tag:"Persuasion technique"},
+      {t:"Je gère des relations clients internationales mais je passe à côté des nuances — je ne peux pas négocier efficacement ni gérer les conversations difficiles avec précision.",tag:"Précision relationnelle client"},
+      {t:"Je pilote une équipe transfrontalière mais mon anglais ne me permet pas de gérer les conflits, donner des retours clairs ou inspirer confiance à mes collègues internationaux.",tag:"Leadership transfrontalier"},
+    ]
+  },
+  marketing:{
+    f:[
+      {t:"Je suis les briefings avec les agences anglophones mais je ne peux pas les challenger, recadrer leur travail ou défendre notre positionnement de marque en anglais.",tag:"Management d'agences"},
+      {t:"Je comprends les retours sur les campagnes internationales mais je ne peux pas contribuer de manière significative ou exprimer des opinions créatives nuancées.",tag:"Contribution créative"},
+      {t:"Écrire en anglais pour des audiences internationales — briefs, communiqués, résumés — me prend bien plus de temps que ça ne devrait.",tag:"Rédaction marketing"},
+      {t:"Je présente avec confiance en français mais en anglais je perds le fil, l'impact, et la capacité à gérer les questions spontanément.",tag:"Confiance en présentation"},
+    ],
+    s:[
+      {t:"Je pilote la stratégie marketing mais je ne peux pas la présenter avec la même autorité en anglais — je passe pour moins crédible que je ne le suis.",tag:"Autorité en présentation stratégique"},
+      {t:"Je manage des agences et partenaires anglophones mais il me manque la précision pour briefer, challenger et diriger au niveau senior.",tag:"Direction d'agences senior"},
+      {t:"Mon anglais est fonctionnel mais pas assez affilé pour les reportings Comex ou conseils internationaux — je ne défends pas le business case avec le même impact.",tag:"Communication exécutive"},
+      {t:"Je pilote des campagnes mais j'ai du mal à construire une vraie influence avec les parties prenantes internationales — la profondeur relationnelle n'est pas là.",tag:"Influence internationale"},
+    ]
+  },
+  product:{
+    f:[
+      {t:"Je travaille avec une équipe de développement internationale mais j'ai du mal à communiquer les exigences, les priorités et les retours avec la précision nécessaire.",tag:"Communication transversale"},
+      {t:"Je suis les discussions produit en anglais mais je ne peux pas les piloter — je prends rarement la parole et mes idées ne passent pas comme elles le devraient.",tag:"Contribution en réunion"},
+      {t:"Je dois présenter des roadmaps et stratégies à des parties prenantes internationales mais je ne suis pas assez confiant(e) pour le faire sans préparation intensive.",tag:"Présentation de roadmap"},
+      {t:"Rédiger des user stories, specs et briefs produit en anglais me prend trop de temps et je ne suis jamais sûr(e) que le langage est assez précis.",tag:"Rédaction produit"},
+    ],
+    s:[
+      {t:"Je pilote une équipe produit mondiale mais il me manque l'autorité en anglais pour challenger, inspirer et aligner les gens entre cultures.",tag:"Leadership d'équipe mondiale"},
+      {t:"Je peux pitcher une vision produit mais pas avec l'impact narratif que j'ai en français — je perds la salle avant d'avoir construit le récit.",tag:"Vision et narration"},
+      {t:"Je gère des conversations investisseurs mais mon anglais n'est pas assez affilé pour le niveau de scrutin — je passe pour moins confiant(e) que mon produit ne le mérite.",tag:"Communication investisseurs"},
+      {t:"Je conduis la discovery produit avec des utilisateurs internationaux mais je passe à côté de la profondeur — je pose les questions basiques mais ne sonde pas efficacement.",tag:"Précision en discovery"},
+    ]
+  },
+  finance:{
+    f:[
+      {t:"Je suis les discussions financières en anglais mais je ne peux pas présenter des chiffres, expliquer des écarts ou défendre des positions sous questioning.",tag:"Présentation financière"},
+      {t:"J'évite la communication écrite en anglais avec les parties prenantes internationales — je comprends la demande mais je ne peux pas répondre avec le bon registre.",tag:"Correspondance parties prenantes"},
+      {t:"Je participe aux appels internationaux mais je rate des détails quand le débit est rapide ou l'accent prononcé.",tag:"Compréhension sous pression"},
+      {t:"Je dois contribuer aux reportings et consolidations internationaux mais mon anglais n'est pas assez bon pour travailler de manière indépendante.",tag:"Reporting international"},
+    ],
+    s:[
+      {t:"Je présente des résultats financiers à une audience internationale mais je perds mon autorité sous les questions — je livre les chiffres mais ne les défends pas de façon persuasive.",tag:"Autorité au niveau board"},
+      {t:"Je travaille avec des investisseurs et analystes internationaux mais mon anglais n'est pas assez précis pour la nuance que ces relations exigent.",tag:"Précision relations investisseurs"},
+      {t:"Je pilote des discussions M&A et stratégiques mais je bute sur le langage de la négociation et du structuring au niveau requis.",tag:"Communication M&A"},
+      {t:"Mon anglais écrit est fonctionnel mais pas crédible au niveau exécutif — mes board papers et investor updates manquent du ton et de la précision attendus.",tag:"Communication écrite exécutive"},
+    ]
+  },
+  technical:{
+    f:[
+      {t:"Je pilote des projets internationaux mais je m'appuie trop sur l'écrit parce que je ne suis pas assez confiant(e) à l'oral ou en réunion.",tag:"Communication verbale de projet"},
+      {t:"Je comprends ce que me disent les clients et parties prenantes anglophones mais je ne peux pas répondre rapidement, précisément ou avec confiance en temps réel.",tag:"Réponse en temps réel"},
+      {t:"Rédiger des status reports, specs techniques et demandes de changement en anglais me prend trop de temps.",tag:"Rédaction de projet technique"},
+      {t:"J'évite de piloter les kick-offs et réunions de revue internationaux — je peux y assister mais pas les animer correctement en anglais.",tag:"Animation de réunion"},
+    ],
+    s:[
+      {t:"Je pilote des projets internationaux complexes mais je perds mon autorité en anglais quand ça se complique — escalades, conflits, conversations difficiles.",tag:"Gestion des escalades"},
+      {t:"Je présente des architectures et propositions techniques mais je ne peux pas les défendre au niveau stratégique — je passe pour un technicien plutôt qu'un leader.",tag:"Positionnement de leadership technique"},
+      {t:"Mon anglais est fonctionnel pour la gestion de projet quotidienne mais pas assez solide pour le management de la relation client ou les communications avec les exécutifs.",tag:"Management parties prenantes exécutives"},
+      {t:"Je manage des équipes internationales mais le manque de précision de mon anglais m'empêche de donner des retours, fixer le cap ou construire la culture d'équipe que je veux.",tag:"Leadership d'équipe internationale"},
+    ]
+  },
+  hr:{
+    f:[
+      {t:"Je conduis des entretiens de recrutement en anglais mais je ne peux pas creuser, challenger les réponses ou évaluer l'adéquation culturelle comme je le ferais en français.",tag:"Profondeur des entretiens"},
+      {t:"Je peux communiquer avec les collaborateurs internationaux à l'écrit mais j'évite les conversations difficiles — feedback, performance, sujets sensibles — en anglais.",tag:"Conversations difficiles"},
+      {t:"J'assiste aux réunions RH internationales mais je contribue très peu — je comprends le contenu mais je ne peux pas participer activement ni défendre nos positions.",tag:"Participation en réunion"},
+      {t:"Je dois rédiger et communiquer des politiques RH, procédures et communications en anglais mais mon niveau n'est pas assez homogène pour le faire en autonomie.",tag:"Communication RH"},
+    ],
+    s:[
+      {t:"Je pilote la stratégie people mais je ne peux pas la présenter avec la même autorité en anglais — le leadership international ne me perçoit pas comme un(e) partenaire stratégique.",tag:"Positionnement RH stratégique"},
+      {t:"Je manage les talents à l'international mais il me manque la précision en anglais pour les conversations nuancées que le développement des talents senior exige.",tag:"Management de talents senior"},
+      {t:"J'anime des programmes de leadership international mais ma facilitation en anglais n'est pas assez solide pour créer l'impact et la crédibilité que ces séances requièrent.",tag:"Facilitation de leadership"},
+      {t:"Je dois reporter les résultats L&D et le ROI à un Comex international mais mon anglais n'est pas assez affilé pour présenter les données et défendre le business case.",tag:"Reporting L&D au Comex"},
+    ]
+  },
+  legal:{
+    f:[
+      {t:"Je lis et comprends les contrats en anglais mais je ne peux pas les négocier, les commenter ou les discuter avec des contreparties anglophones avec la précision requise.",tag:"Négociation contractuelle"},
+      {t:"Je participe aux calls et réunions juridiques internationaux mais je ne peux pas intervenir rapidement ni exprimer des positions nuancées sous pression.",tag:"Réunions juridiques internationales"},
+      {t:"Je dois rédiger des correspondances, avis et notes juridiques en anglais mais le registre professionnel et la précision du langage juridique me font défaut.",tag:"Rédaction juridique"},
+      {t:"Je travaille avec des cabinets étrangers ou des clients anglophones mais je dois toujours passer par un intermédiaire ou préparer intensivement avant chaque échange.",tag:"Relations avec contreparties anglophones"},
+    ],
+    s:[
+      {t:"Je conduis des négociations contractuelles complexes mais en anglais je perds l'autorité, la précision et la capacité à tenir ferme sur les points critiques.",tag:"Autorité en négociation complexe"},
+      {t:"Je conseille des clients sur des opérations internationales mais mon anglais ne me permet pas de délivrer le même niveau de conseil et de conviction qu'en français.",tag:"Conseil client international"},
+      {t:"Je pilote des due diligences et opérations M&A transfrontalières mais les échanges en anglais manquent de la précision et de la fluidité que ces opérations exigent.",tag:"Due diligence et M&A"},
+      {t:"Je représente l'entreprise ou mes clients dans des arbitrages ou contentieux internationaux mais mon anglais n'est pas à la hauteur des enjeux dans ces contextes.",tag:"Arbitrage et contentieux international"},
+    ]
+  },
+  founder:{
+    f:[
+      {t:"Je pitche bien en français mais quand je passe à l'anglais je perds l'énergie, la conviction et la capacité à lire la salle et m'y adapter.",tag:"Confiance en pitch"},
+      {t:"Je gère des réunions clients internationales mais je ne peux pas négocier, tenir ferme ou conclure avec la même autorité qu'en français.",tag:"Autorité commerciale"},
+      {t:"Je networke lors d'événements internationaux mais le suivi cale — mon anglais n'est pas assez à l'aise pour transformer les conversations en vraies relations.",tag:"Conversion relationnelle"},
+      {t:"Mon anglais écrit est inégal — investor updates, propositions de partenariat et communications clients ne reflètent pas la qualité de ce que j'ai construit.",tag:"Crédibilité écrite"},
+    ],
+    s:[
+      {t:"Je pitche à des investisseurs anglophones mais je passe pour moins confiant(e) et crédible que je ne le suis — le langage freine le récit.",tag:"Autorité en pitch investisseur"},
+      {t:"Je signe des clients anglophones mais je ne peux pas développer les relations au niveau requis — il me manque la profondeur pour les conversations stratégiques qui font croître le business.",tag:"Relations clients stratégiques"},
+      {t:"Je dirige une équipe et un board bilingues mais mon anglais n'est pas assez solide pour piloter avec la même autorité, vision et précision qu'en français.",tag:"Autorité de leadership"},
+      {t:"Je m'internationalise mais le déficit linguistique devient un plafond — je délègue des conversations que je devrais piloter moi-même.",tag:"Internationalisation"},
+    ]
+  }
+};
+
+const SCENARIOS={
+  sales:["Négocier les prix, conditions ou délais avec un client anglophone","Prospecter de nouveaux comptes sur des marchés anglophones","Gérer les objections et conclure un deal par téléphone ou vidéo","Présenter votre produit sur un salon international","Rédiger des emails de suivi, propositions et devis en anglais","Construire des relations avec des distributeurs ou partenaires étrangers","Gérer un conflit ou litige client en anglais","Délivrer un pitch formel à un nouveau prospect international"],
+  industrial:["Présenter des specs techniques à un client ou distributeur étranger","Négocier un contrat de fourniture ou de service avec un acheteur anglophone","Décrire une panne ou incident technique à un client ou au siège","Piloter une réunion de revue qualité ou de production transfrontalière","Rédiger des rapports techniques ou fiches de maintenance en anglais","Gérer un projet de mise en service ou d'installation internationale","Répondre à une réclamation client ou demande de garantie en anglais","Présenter vos capacités industrielles sur un salon international"],
+  marketing:["Briefer une agence internationale ou un partenaire créatif en anglais","Présenter une stratégie de campagne à des parties prenantes étrangères","Piloter une réunion d'équipe marketing internationale","Rédiger ou relire des copies, communiqués ou communications en anglais","Présenter des résultats de campagne et ROI à un comité de direction anglophone","Gérer les relations avec les médias ou contacts PR internationaux","Co-piloter un lancement produit sur plusieurs marchés anglophones","Présenter un repositionnement de marque à une équipe de direction mondiale"],
+  product:["Mener un entretien de discovery produit avec un utilisateur anglophone","Présenter une roadmap produit à une équipe internationale","Pitcher une nouvelle fonctionnalité à des investisseurs ou au management senior","Rédiger des user stories, specs ou briefs produit en anglais","Piloter une réunion transversale avec des développeurs internationaux","Gérer une démo produit en direct avec des clients anglophones","Faciliter une sprint review avec une équipe mondiale","Présenter une analyse concurrentielle au leadership"],
+  finance:["Présenter des résultats financiers ou un business case à un board anglophone","Communiquer avec des investisseurs ou analystes internationaux","Contribuer à des discussions M&A ou de planification stratégique","Rédiger des rapports financiers ou board papers en anglais","Négocier des conditions avec des banques ou partenaires financiers étrangers","Participer à des réunions de comité de pilotage internationaux","Expliquer la performance financière à des interlocuteurs non-financiers anglophones","Présenter un budget ou une demande d'investissement à un comité international"],
+  technical:["Piloter un kick-off ou une réunion de suivi de projet internationale","Expliquer un problème technique à une partie prenante anglophone","Rédiger de la documentation projet, des specs ou status reports en anglais","Gérer un litige ou une escalade avec un client étranger","Présenter une proposition technique à une audience internationale","Intégrer ou manager un prestataire en anglais","Participer à un audit technique avec une équipe internationale","Coordonner la gestion d'incidents à travers les fuseaux horaires"],
+  hr:["Conduire un entretien de recrutement avec un candidat anglophone","Présenter un programme de formation au management international","Faciliter un workshop avec une équipe multilingue","Rédiger des politiques RH ou communications employés en anglais","Négocier une rémunération avec des candidats étrangers","Reporter des résultats L&D à un Comex international","Gérer une conversation délicate sur la performance en anglais","Présenter un programme de talents au leadership RH mondial"],
+  legal:["Négocier des clauses contractuelles avec une contrepartie anglophone","Rédiger ou commenter un contrat, un avenant ou une lettre d'intention en anglais","Participer à une réunion de due diligence ou de closing avec des équipes internationales","Conseiller un client ou des dirigeants sur une opération internationale en anglais","Gérer des échanges avec un cabinet étranger ou des conseils anglophones","Rédiger une note juridique, un avis ou un mémo en anglais","Représenter l'entreprise ou un client dans un arbitrage ou contentieux international","Présenter un analyse juridique ou un risque à un comité de direction anglophone"],
+  founder:["Pitcher votre entreprise à des investisseurs ou accélérateurs anglophones","Négocier un partenariat ou accord commercial en anglais","Présenter votre produit à des clients B2B internationaux","Représenter votre entreprise lors d'événements internationaux","Rédiger des investor updates ou propositions de partenariat en anglais","Manager un board ou des advisors qui communiquent en anglais","Recruter et intégrer des membres d'équipe internationaux","Gérer des relations presse ou prises de parole publiques en anglais"],
+};
+
+const SECTOR_LABELS={sales:"Ventes internationales",industrial:"Industrie / Fabrication",marketing:"Marketing & Marque",product:"Produit & Innovation",finance:"Finance & Stratégie",technical:"Management technique",hr:"RH & L&D",legal:"Juridique",founder:"Entrepreneur / Fondateur"};
+const TRACK_LABELS={f:"Parcours Foundation — A2 vers B1",s:"Parcours Stratégique — B2+"};
+
+let state={fname:'',lname:'',jobtitle:'',company:'',sector:'',email:'',track:null,challenge:null,challengeText:'',rows:[{sit:'',v:0,r:0,t:0,e:0},{sit:'',v:0,r:0,t:0,e:0},{sit:'',v:0,r:0,t:0,e:0},{sit:'',v:0,r:0,t:0,e:0}],usedChips:new Set(),showMore:false};
+
+function go(n){
+  if(n===2)readStep1();
+  if(n===3)buildVRTE();
+  if(n===4)buildSummary();
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+n).classList.add('active');
+  const w={1:5,2:30,3:60,4:90};
+  document.getElementById('prog').style.width=(w[n]||100)+'%';
+  window.scrollTo(0,0);
+}
+
+function readStep1(){
+  state.fname=document.getElementById('fname').value;
+  state.lname=document.getElementById('lname').value;
+  state.jobtitle=document.getElementById('jobtitle').value;
+  state.company=document.getElementById('company').value;
+  state.sector=document.getElementById('sector').value;
+  state.email=document.getElementById('email').value;
+}
+
+function pickTrack(t){
+  state.track=t;state.challenge=null;state.challengeText='';
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('sel'));
+  document.getElementById(t==='f'?'tf':'ts').classList.add('sel');
+  document.getElementById('ch-sec').classList.add('visible');
+  document.getElementById('ch-sub').textContent='Adapté à votre secteur — sélectionnez la description qui vous parle le plus.';
+  renderChallenges();
+  document.getElementById('btn2').disabled=true;
+}
+
+function renderChallenges(){
+  const sec=state.sector||'sales';const t=state.track;
+  const list=(CHALLENGES[sec]&&CHALLENGES[sec][t])?CHALLENGES[sec][t]:CHALLENGES.sales[t]||[];
+  document.getElementById('ch-cards').innerHTML=list.map((c,i)=>`<div class="ch-card" id="cc${i}" onclick="pickChallenge(${i})"><div class="ch-radio"></div><div><div class="ch-txt">${c.t}</div><div class="ch-tag">${c.tag}</div></div></div>`).join('')+`<div class="ch-card" id="ccother" onclick="pickChallenge('other')"><div class="ch-radio"></div><div><div class="ch-txt" style="color:#9ca3af;font-style:italic;">Ma situation est différente — je vais la décrire en quelques mots.</div><div class="ch-tag">Autre</div></div></div>`;
+  document.getElementById('ch-other').classList.remove('visible');
+}
+
+function pickChallenge(idx){
+  state.challenge=idx;
+  document.querySelectorAll('.ch-card').forEach(c=>c.classList.remove('sel'));
+  document.getElementById('cc'+idx).classList.add('sel');
+  const ota=document.getElementById('ch-other');
+  if(idx==='other'){ota.classList.add('visible');ota.focus();ota.oninput=function(){state.challengeText=this.value;document.getElementById('btn2').disabled=this.value.trim().length<10;};document.getElementById('btn2').disabled=true;}
+  else{ota.classList.remove('visible');const sec=state.sector||'sales';const t=state.track;const list=(CHALLENGES[sec]&&CHALLENGES[sec][t])?CHALLENGES[sec][t]:CHALLENGES.sales[t]||[];state.challengeText=list[idx]?list[idx].t:'';document.getElementById('btn2').disabled=false;}
+}
+
+function buildVRTE(){
+  const sec=state.sector||'sales';
+  document.getElementById('sugg-title').textContent='Situations fréquentes — '+(SECTOR_LABELS[sec]||sec);
+  state.usedChips=new Set();state.showMore=false;
+  renderChips();renderRows();
+}
+
+function renderChips(){
+  const sc=SCENARIOS[state.sector||'sales']||SCENARIOS.sales;
+  const vis=state.showMore?sc:sc.slice(0,6);
+  document.getElementById('chip-grid').innerHTML=vis.map((s,i)=>{const u=state.usedChips.has(i);return`<div class="chip${u?' used':''}" onclick="${u?'':'addChip('+i+')'}" id="chip${i}"><div class="chip-icon">${u?'✓':'+'}</div><div class="chip-txt">${s}</div></div>`;}).join('');
+  const rem=sc.length-6;const btn=document.getElementById('show-more-btn');
+  if(rem>0&&!state.showMore){btn.textContent='+ Voir '+rem+' situations de plus';btn.style.display='block';}
+  else if(state.showMore){btn.textContent='− Voir moins';btn.style.display='block';}
+  else{btn.style.display='none';}
+}
+
+function toggleMore(){state.showMore=!state.showMore;renderChips();}
+
+function addChip(i){
+  const empty=state.rows.findIndex(r=>!r.sit.trim());if(empty===-1)return;
+  const sc=SCENARIOS[state.sector||'sales']||SCENARIOS.sales;
+  state.rows[empty].sit=sc[i];
+  const inp=document.getElementById('sit-'+empty);if(inp)inp.value=sc[i];
+  const row=document.getElementById('row-'+empty);if(row){row.classList.add('lit');setTimeout(()=>row.classList.remove('lit'),700);}
+  state.usedChips.add(i);renderChips();
+}
+
+function renderRows(){
+  document.getElementById('vrte-body').innerHTML=state.rows.map((r,i)=>`<div class="vrte-row" id="row-${i}"><input class="sit-inp" id="sit-${i}" type="text" value="${r.sit}" placeholder="${i===0?'ex. Négocier les prix avec un client anglophone':'Ajoutez une situation...'}" oninput="state.rows[${i}].sit=this.value"/>${['v','r','t','e'].map(d=>`<select class="sc-sel" id="${d}-${i}" onchange="scoreRow(${i})"><option value="0">—</option>${[1,2,3,4,5].map(n=>`<option${state.rows[i][d]===n?' selected':''}>${n}</option>`).join('')}</select>`).join('')}<div class="tot-b zc" id="tot-${i}">—</div><div class="zn-lbl" id="zon-${i}">—</div></div>`).join('');
+  state.rows.forEach((_,i)=>scoreRow(i));
+}
+
+function scoreRow(i){
+  const v=parseInt(document.getElementById('v-'+i).value)||0;const r=parseInt(document.getElementById('r-'+i).value)||0;const t=parseInt(document.getElementById('t-'+i).value)||0;const e=parseInt(document.getElementById('e-'+i).value)||0;
+  state.rows[i]={...state.rows[i],v,r,t,e};const tot=v+r+t+e;
+  const tb=document.getElementById('tot-'+i);const zn=document.getElementById('zon-'+i);
+  if(!v&&!r&&!t&&!e){tb.textContent='—';tb.className='tot-b zc';zn.textContent='—';return;}
+  tb.textContent=tot;
+  if(tot>=16){tb.className='tot-b zk';zn.textContent='Critique';zn.style.color='#1b4f5a';}
+  else if(tot>=11){tb.className='tot-b zs';zn.textContent='Stratégique';zn.style.color='#3d6b5e';}
+  else if(tot>=6){tb.className='tot-b zd';zn.textContent='Secondaire';zn.style.color='#8a6200';}
+  else{tb.className='tot-b zc';zn.textContent='À surveiller';zn.style.color='#9ca3af';}
+}
+
+function zone(tot){if(tot>=16)return{l:'Critique',c:'zk'};if(tot>=11)return{l:'Stratégique',c:'zs'};if(tot>=6)return{l:'Secondaire',c:'zd'};return{l:'À surveiller',c:'zc'};}
+
+function buildSummary(){
+  state.rows.forEach((_,i)=>{const inp=document.getElementById('sit-'+i);if(inp)state.rows[i].sit=inp.value;});
+  const sl=SECTOR_LABELS[state.sector]||state.sector||'—';const tl=TRACK_LABELS[state.track]||'—';
+  document.getElementById('sum-profile').innerHTML=`<div class="sum-row"><span class="sum-lbl">Nom</span><span class="sum-val">${state.fname} ${state.lname}</span></div><div class="sum-row"><span class="sum-lbl">Poste</span><span class="sum-val">${state.jobtitle||'—'}</span></div><div class="sum-row"><span class="sum-lbl">Entreprise</span><span class="sum-val">${state.company||'—'}</span></div><div class="sum-row"><span class="sum-lbl">Secteur</span><span class="sum-val">${sl}</span></div><div class="sum-row"><span class="sum-lbl">Email</span><span class="sum-val">${state.email||'—'}</span></div><div class="sum-row"><span class="sum-lbl">Parcours</span><span class="sum-val">${tl}</span></div>`;
+  document.getElementById('sum-challenge').textContent=state.challengeText||'—';
+  const ranked=[...state.rows].map((r,i)=>({...r,sit:document.getElementById('sit-'+i)?.value||r.sit})).filter(r=>r.sit.trim()).map(r=>({...r,tot:r.v+r.r+r.t+r.e})).sort((a,b)=>b.tot-a.tot);
+  document.getElementById('sum-vrte').innerHTML=ranked.length?ranked.map((r,i)=>{const z=zone(r.tot);return`<div class="pri-item"><div class="pri-num">${i+1}</div><div class="pri-sit">${r.sit}</div><span class="pri-score ${z.c}">${r.tot}/20 — ${z.l}</span></div>`;}).join(''):'<p style="font-size:13px;color:#9ca3af">Aucune situation notée.</p>';
+  const rec=state.track==='f'?`<p style="font-size:13px;line-height:1.7;color:#374151;margin-bottom:10px;">Le <strong>Parcours Foundation</strong> est recommandé. Votre programme se concentrera sur la suppression des blocages, le développement du vocabulaire professionnel spécifique à votre secteur, et votre mise en autonomie opérationnelle dans les situations prioritaires identifiées.</p><ul class="out-list"><li>Conduire votre situation prioritaire avec confiance et sans support de préparation</li><li>Communiquer professionnellement en anglais à l'écrit et en temps réel</li><li>Atteindre le niveau B1 CECRL — certifié lors de l'évaluation finale</li></ul><div style="font-size:12px;color:#6b7280;margin-top:8px;">€1 600 · 40 heures · 4 échéances · Exonéré de TVA</div>`:`<p style="font-size:13px;line-height:1.7;color:#374151;margin-bottom:10px;">Le <strong>Parcours Stratégique</strong> est recommandé. Votre programme se concentrera sur l'influence, la précision et l'autorité — la communication qui distingue les hauts performeurs dans votre domaine.</p><ul class="out-list"><li>Piloter vos situations prioritaires avec autorité et cadrage stratégique</li><li>Convaincre et diriger en anglais dans les situations qui comptent vraiment</li><li>Rapport d'impact Comex-ready à mi-parcours et à l'évaluation finale</li></ul><div style="font-size:12px;color:#6b7280;margin-top:8px;">€2 500–€4 000 · proposition sur mesure · facturation entreprise disponible</div>`;
+  document.getElementById('sum-rec').innerHTML=rec;
+}
+
+function getZoneLabel(t){return t>=16?'Critique':t>=11?'Stratégique':t>=6?'Secondaire':'À surveiller';}
+
+function buildEmailBody(){
+  const sl=SECTOR_LABELS[state.sector]||state.sector||'-';
+  const tl=state.track==='f'?'Parcours Foundation (A2-B1)':state.track==='s'?'Parcours Stratégique (B2+)':'-';
+  const ranked=[...state.rows].map((r,i)=>({...r,sit:document.getElementById('sit-'+i)?.value||r.sit})).filter(r=>r.sit.trim()).map(r=>({...r,tot:r.v+r.r+r.t+r.e})).sort((a,b)=>b.tot-a.tot);
+  const notes=document.getElementById('notes').value.trim();
+  let b='PRECISION ENGLISH METHOD - DIAGNOSTIC PROFESSIONNEL\n'+'='.repeat(48)+'\n\n';
+  b+='PROFIL CLIENT\n'+'-'.repeat(28)+'\n';
+  b+='Nom :         '+state.fname+' '+state.lname+'\n';
+  b+='Poste :       '+(state.jobtitle||'-')+'\n';
+  b+='Entreprise :  '+(state.company||'-')+'\n';
+  b+='Secteur :     '+sl+'\n';
+  b+='Email :       '+(state.email||'-')+'\n';
+  b+='Parcours :    '+tl+'\n\n';
+  b+='SITUATION ACTUELLE\n'+'-'.repeat(28)+'\n'+(state.challengeText||'-')+'\n\n';
+  b+='SITUATIONS V.R.T.E PRIORITAIRES (classées par score)\n'+'-'.repeat(28)+'\n';
+  ranked.forEach((r,i)=>{b+=(i+1)+'. '+r.sit+'\n   Score : '+r.tot+'/20 - '+getZoneLabel(r.tot)+' (V:'+r.v+' R:'+r.r+' T:'+r.t+' E:'+r.e+')\n';});
+  if(!ranked.length)b+='Aucune situation notée.\n';
+  if(notes){b+='\nINFORMATIONS COMPLÉMENTAIRES\n'+'-'.repeat(28)+'\n'+notes+'\n';}
+  b+='\n'+'='.repeat(48)+'\nPEM Diagnostic - precisionenglishmethod.com';
+  return b;
+}
+
+function submit(){
+  state.rows.forEach((_,i)=>{const inp=document.getElementById('sit-'+i);if(inp)state.rows[i].sit=inp.value;});
+  const ranked=[...state.rows].filter(r=>r.sit.trim()).map(r=>({...r,tot:r.v+r.r+r.t+r.e})).sort((a,b)=>b.tot-a.tot);
+
+  // POINT DE CONNEXION WEBHOOK
+  // Remplacer les lignes mailto ci-dessous par un appel fetch() vers Make.com :
+  // fetch('VOTRE_URL_WEBHOOK',{method:'POST',headers:{'Content-Type':'application/json'},
+  //   body:JSON.stringify({name:state.fname+' '+state.lname,email:state.email,
+  //   jobtitle:state.jobtitle,company:state.company,sector:state.sector,
+  //   track:state.track,challenge:state.challengeText,
+  //   situations:ranked,notes:document.getElementById('notes').value})})
+
+  const subject=encodeURIComponent('Diagnostic PEM — '+state.fname+' '+state.lname+(ranked.length?' — '+ranked[0].sit.substring(0,45):''));
+  const body=encodeURIComponent(buildEmailBody());
+  const mailto='mailto:stephanie@precisionenglishmethod.com?subject='+subject+'&body='+body;
+
+  // Update booking link with pre-fill
+  const bookLink=document.getElementById('book-link');
+  bookLink.href='https://calendly.com/stephanie-precisionenglishmethod/new-meeting?name='+encodeURIComponent(state.fname+' '+state.lname)+'&email='+encodeURIComponent(state.email);
+
+  document.getElementById('prog').style.width='100%';
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s5').classList.add('active');
+  document.getElementById('s-name').textContent='Merci'+(state.fname?', '+state.fname:'')+'.';
+  document.getElementById('s-top').textContent=ranked.length?ranked[0].sit+' — '+ranked[0].tot+'/20':'À confirmer lors de votre séance';
+  window.scrollTo(0,0);
+  setTimeout(()=>{window.location.href=mailto;},800);
+}
+</script>
+</body>
+</html>
